@@ -1,0 +1,17 @@
+.main {
+  padding: 4rem 2rem;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+
+  @media (width >= 64rem) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
