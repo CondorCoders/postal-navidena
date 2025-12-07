@@ -35,9 +35,9 @@ interface LightRaysProps {
 const DEFAULT_COLOR = "#ffffff";
 
 const lightRayColours = {
-  red: "#7c0403",
-  green: "#1f2911",
-  wood: "#471a07",
+  red: "#dabdab",
+  green: "#dabdab",
+  wood: "#fdd4ff",
 };
 
 const hexToRgb = (hex: string): [number, number, number] => {
