@@ -1,0 +1,24 @@
+.button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 1000px;
+  background-color: var(--card);
+  color: var(--card-text);
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: var(--card-text);
+    color: var(--card);
+  }
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+
+    &:hover {
+      background-color: var(--card);
+      color: var(--card-text);
+    }
+  }
+}

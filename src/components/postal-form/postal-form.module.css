@@ -1,8 +1,29 @@
+.title {
+  font-size: 2rem;
+  text-align: center;
+  color: var(--text);
+}
 .form {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.buttonsContainer {
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttonGroup {
+  display: flex;
   gap: 1rem;
 }
 
-.inputGroup {
-  display: grid;
+.visible.visible {
+  display: flex;
+}
+.hidden.hidden {
+  display: none;
 }

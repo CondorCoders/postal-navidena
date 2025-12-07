@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Merriweather } from "next/font/google";
 import "./globals.css";
+import LightRays from "@/components/light-rays/light-rays";
+import { ThemeProvider } from "@/context/theme-context";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const merriweather = Merriweather({
+  weight: ["400", "700"],
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-merriweather",
 });
 
 export const metadata: Metadata = {
@@ -23,9 +21,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+    <html lang="en" data-theme="red">
+      <body className={`${merriweather.variable}`}>
+        <ThemeProvider>
+          <LightRays
+            raysOrigin="top-center"
+            raysSpeed={1.5}
+            lightSpread={0.8}
+            rayLength={1.2}
+            followMouse={true}
+            mouseInfluence={0.1}
+            noiseAmount={0.1}
+            distortion={0.05}
+          />
+
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

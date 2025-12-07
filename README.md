@@ -13,4 +13,5 @@ Un proyecto Open Source con fines educativos que permite a los usuarios crear po
 
 ```
 pnpm i
+pnpm dev
 ```

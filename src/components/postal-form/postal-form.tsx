@@ -4,8 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import styles from "./postal-form.module.css";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { createPostal } from "@/actions/postal";
+import { useTheme } from "@/context/theme-context";
+import { PostalBuilder } from "../postal-builder/postal-builder";
+import { Button } from "../button/button";
+import { PostalBack } from "../postal-back/postal-back";
 
 const PostalFormSchema = z.object({
   fromName: z.string().min(1, "El nombre del remitente es obligatorio"),
@@ -28,10 +32,12 @@ const PostalFormSchema = z.object({
     ),
 });
 
-type PostalFormData = z.infer<typeof PostalFormSchema>;
+export type PostalFormData = z.infer<typeof PostalFormSchema>;
 
 export const PostalForm = () => {
+  const [step, setStep] = useState(1);
   const [isPending, startTransition] = useTransition();
+
   const {
     register,
     handleSubmit,
@@ -61,36 +67,44 @@ export const PostalForm = () => {
 
   return (
     <form onSubmit={handleSubmit(handlePostalSubmit)} className={styles.form}>
-      <div className={styles.inputGroup}>
-        <label htmlFor="fromName">De:</label>
-        <input type="text" {...register("fromName")} />
-        {errors.fromName && <p>{errors.fromName.message}</p>}
+      <h1 className={styles.title}>
+        {step === 1
+          ? "Decora tu postal"
+          : step === 2
+          ? "Escribe tu mensaje"
+          : "Revisa y envía tu postal"}
+      </h1>
+      <PostalBuilder
+        className={step === 1 ? styles.visible : styles.hidden}
+        setValue={setValue}
+        erros={errors}
+      />
+
+      <PostalBack
+        register={register}
+        errors={errors}
+        className={step === 2 ? styles.visible : styles.hidden}
+      />
+
+      <div className={styles.buttonsContainer}>
+        <div className={styles.buttonGroup}>
+          {step > 1 && (
+            <Button type="button" onClick={() => setStep(step - 1)}>
+              Anterior
+            </Button>
+          )}
+          {step < 3 && (
+            <Button type="button" onClick={() => setStep(step + 1)}>
+              Siguiente
+            </Button>
+          )}
+          {step === 3 && (
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Creando..." : "Crear Postal"}
+            </Button>
+          )}
+        </div>
       </div>
-      <div className={styles.inputGroup}>
-        <label htmlFor="toName">Para:</label>
-        <input type="text" {...register("toName")} />
-        {errors.toName && <p>{errors.toName.message}</p>}
-      </div>
-      <div className={styles.inputGroup}>
-        <label htmlFor="message">Mensaje:</label>
-        <textarea {...register("message")}></textarea>
-        {errors.message && <p>{errors.message.message}</p>}
-      </div>
-      <div>
-        <label htmlFor="image">Imagen:</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            const file = e.target.files ? e.target.files[0] : undefined;
-            if (file) setValue("file", file);
-          }}
-        />
-        {errors.file && <p>{errors.file.message}</p>}
-      </div>
-      <button type="submit" disabled={isPending}>
-        {isPending ? "Creando..." : "Crear Postal"}
-      </button>
     </form>
   );
 };
