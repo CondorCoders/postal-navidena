@@ -5,7 +5,6 @@
   gap: 1rem;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
 }
 .postalBack {
   width: 100%;
@@ -35,19 +34,26 @@
 }
 .stamp {
   position: relative;
-  width: 8rem;
-  height: 8rem;
+  width: clamp(4rem, 15vw, 8rem);
+  height: clamp(4rem, 15vw, 8rem);
   aspect-ratio: 1 / 1;
   background-color: var(--background);
+}
+.transparent {
+  background-color: transparent;
 }
 .inputGroup {
   width: 100%;
   display: grid;
   gap: 0.5rem;
+
+  font-size: 0.875rem;
+  font-weight: 400;
 }
 .input,
 .textarea {
   background-color: transparent;
+  color: var(--card-text);
   border: 0;
   border-bottom: 1px solid var(--card-text);
 
@@ -62,14 +68,20 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 400;
 }
 .textarea {
   height: 100%;
-  width: 80%;
-  font-size: 1.5rem;
+  font-size: 0.8rem;
   border: none;
   transform: rotate(-2deg);
-  padding: 2rem;
+  padding: 1rem;
+  padding-top: 0;
+
+  &::placeholder {
+    color: var(--card-text);
+  }
 }
 .stampsSection {
   width: 100%;
@@ -85,19 +97,40 @@
 .stampButton {
   border-radius: 0;
   aspect-ratio: 1 / 1;
-  width: 6rem;
+  width: clamp(4rem, 12vw, 6rem);
   position: relative;
-  /* border: 3px solid var(--card); */
   padding: 0.5rem;
   background-color: transparent;
-  transition: box-shadow 0.2s ease-in-out;
+  opacity: 0.5;
+  transition: box-shadow 0.2s ease-in-out, opacity 0.2s ease-in-out;
 
   &:hover {
-    /* border-color: var(--card-text); */
+    opacity: 1;
+    background-color: transparent;
     box-shadow: 0 0 8px var(--card);
   }
 }
+.stampSelected {
+  box-shadow: 0 0 8px var(--card);
+  opacity: 1;
+}
 .subtitle {
-  font-size: 1rem;
+  font-size: 0.875rem;
   color: var(--text);
+}
+
+@media (width >= 64rem) {
+  .inputGroup,
+  .messageInput {
+    font-size: 1.2rem;
+  }
+
+  .textarea {
+    font-size: 1.5rem;
+    padding: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
 }

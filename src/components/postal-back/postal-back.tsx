@@ -18,7 +18,7 @@ export const PostalBack = ({
   register,
   errors,
 }: PostalBackProps) => {
-  const [stamp, setStamp] = useState<string | null>(null);
+  const [selectedStamp, setSelectedStamp] = useState<string | null>(null);
 
   return (
     <div className={`${styles.container} ${className}`}>
@@ -45,9 +45,17 @@ export const PostalBack = ({
                 {errors.toName && <p>{errors.toName.message}</p>}
               </div>
             </div>
-            <div className={styles.stamp}>
-              {stamp && (
-                <Image fill src={stamps[stamp].src} alt={stamps[stamp].alt} />
+            <div
+              className={`${styles.stamp} ${
+                selectedStamp && styles.transparent
+              }`}
+            >
+              {selectedStamp && (
+                <Image
+                  fill
+                  src={stamps[selectedStamp].src}
+                  alt={stamps[selectedStamp].alt}
+                />
               )}
             </div>
           </div>
@@ -70,8 +78,10 @@ export const PostalBack = ({
             <Button
               key={key}
               type="button"
-              className={styles.stampButton}
-              onClick={() => setStamp(key)}
+              className={`${styles.stampButton} ${
+                selectedStamp === key ? styles.stampSelected : ""
+              }`}
+              onClick={() => setSelectedStamp(key)}
             >
               <Image fill src={stamp.src} alt={stamp.alt} />
             </Button>

@@ -15,9 +15,13 @@ body {
   overflow-x: hidden;
 }
 
-body {
+html {
   color: var(--text);
   background: var(--background);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+body {
   font-family: var(--font-merriweather), serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
