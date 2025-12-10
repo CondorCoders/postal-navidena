@@ -18,63 +18,79 @@ export const PostalBack = ({
   register,
   errors,
 }: PostalBackProps) => {
+  const stampsKeys = Object.keys(stamps);
+  const [stampsVisible, setStampsVisible] = useState(stampsKeys);
   const [selectedStamp, setSelectedStamp] = useState<string | null>(null);
+  const [messageLength, setMessageLength] = useState(0);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value.toLowerCase();
+    const matchedStamps = stampsKeys.filter((key) =>
+      key.toLowerCase().includes(query)
+    );
+    setStampsVisible(matchedStamps.length > 0 ? matchedStamps : stampsKeys);
+  };
 
   return (
     <div className={`${styles.container} ${className}`}>
       <div className={styles.postalBack}>
         <div className={styles.content}>
-          <div className={styles.namesContainer}>
-            <div className={styles.names}>
-              <div className={styles.inputGroup}>
-                <label htmlFor="fromName">De:</label>
-                <input
-                  type="text"
-                  {...register("fromName")}
-                  className={styles.input}
-                />
-                {errors.fromName && <p>{errors.fromName.message}</p>}
-              </div>
-              <div className={styles.inputGroup}>
-                <label htmlFor="toName">Para:</label>
-                <input
-                  type="text"
-                  {...register("toName")}
-                  className={styles.input}
-                />
-                {errors.toName && <p>{errors.toName.message}</p>}
-              </div>
+          <div className={styles.names}>
+            <div className={styles.inputGroup}>
+              <label htmlFor="fromName">De:</label>
+              <input
+                type="text"
+                {...register("fromName")}
+                className={styles.input}
+              />
+              {errors.fromName && <p>{errors.fromName.message}</p>}
             </div>
-            <div
-              className={`${styles.stamp} ${
-                selectedStamp && styles.transparent
-              }`}
-            >
-              {selectedStamp && (
-                <Image
-                  fill
-                  src={stamps[selectedStamp].src}
-                  alt={stamps[selectedStamp].alt}
-                />
-              )}
+            <div className={styles.inputGroup}>
+              <label htmlFor="toName">Para:</label>
+              <input
+                type="text"
+                {...register("toName")}
+                className={styles.input}
+              />
+              {errors.toName && <p>{errors.toName.message}</p>}
             </div>
           </div>
+          <div
+            className={`${styles.stamp} ${selectedStamp && styles.transparent}`}
+          >
+            {selectedStamp && (
+              <Image
+                fill
+                src={stamps[selectedStamp].src}
+                alt={stamps[selectedStamp].alt}
+              />
+            )}
+          </div>
+        </div>
 
-          <div className={styles.messageInput}>
-            <label htmlFor="message">Mensaje:</label>
-            <textarea
-              {...register("message")}
-              placeholder="Escribe tu mensaje aquí"
-              className={styles.textarea}
-            ></textarea>
-            {errors.message && <p>{errors.message.message}</p>}
-          </div>
+        <div className={styles.messageInput}>
+          <label htmlFor="message">Mensaje:</label>
+          <textarea
+            {...register("message")}
+            placeholder="Escribe tu mensaje aquí"
+            className={styles.textarea}
+            maxLength={125}
+            onChange={(e) => setMessageLength(e.target.value.length)}
+          ></textarea>
+          <div className={styles.characterCount}>{messageLength}/125</div>
+          {errors.message && <p>{errors.message.message}</p>}
         </div>
       </div>
       <div className={styles.stampsSection}>
-        <h2 className={styles.subtitle}>Estampas</h2>
+        <h2 className={`${styles.subtitle} srOnly`}>Estampas</h2>
+        <input
+          type="text"
+          placeholder="Buscar estampa..."
+          className={styles.searchInput}
+          onChange={handleSearch}
+        />
         <div className={styles.stampsContainer}>
-          {Object.entries(stamps).map(([key, stamp]) => (
+          {stampsVisible.map((key) => (
             <Button
               key={key}
               type="button"
@@ -83,7 +99,7 @@ export const PostalBack = ({
               }`}
               onClick={() => setSelectedStamp(key)}
             >
-              <Image fill src={stamp.src} alt={stamp.alt} />
+              <Image fill src={stamps[key].src} alt={stamps[key].alt} />
             </Button>
           ))}
         </div>

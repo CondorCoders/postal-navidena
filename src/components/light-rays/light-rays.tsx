@@ -32,8 +32,6 @@ interface LightRaysProps {
   className?: string;
 }
 
-const DEFAULT_COLOR = "#ffffff";
-
 const lightRayColours = {
   red: "#dabdab",
   green: "#dabdab",

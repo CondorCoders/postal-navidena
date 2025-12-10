@@ -77,7 +77,7 @@ export const PostalForm = () => {
       <PostalBuilder
         className={step === 1 ? styles.visible : styles.hidden}
         setValue={setValue}
-        erros={errors}
+        errors={errors}
       />
 
       <PostalBack

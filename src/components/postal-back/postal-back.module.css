@@ -1,14 +1,13 @@
 .container {
-  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
 }
 .postalBack {
   width: 100%;
   display: flex;
+  flex-direction: column;
   aspect-ratio: 16 / 9;
   border-radius: 8px;
   background-color: var(--card);
@@ -17,20 +16,14 @@
 .content {
   width: 100%;
   display: flex;
-  flex-direction: column;
   gap: 1rem;
   color: var(--card-text);
-}
-.namesContainer {
-  width: 100%;
-  display: flex;
-  gap: 1rem;
 }
 .names {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 .stamp {
   position: relative;
@@ -44,14 +37,19 @@
 }
 .inputGroup {
   width: 100%;
-  display: grid;
+  display: flex;
   gap: 0.5rem;
 
   font-size: 0.875rem;
   font-weight: 400;
+
+  > label {
+    min-width: 3rem;
+  }
 }
 .input,
 .textarea {
+  width: 100%;
   background-color: transparent;
   color: var(--card-text);
   border: 0;
@@ -64,20 +62,21 @@
   }
 }
 .messageInput {
+  position: relative;
   height: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   font-size: 0.875rem;
   font-weight: 400;
+  color: var(--card-text);
 }
 .textarea {
   height: 100%;
   font-size: 0.8rem;
   border: none;
   transform: rotate(-2deg);
-  padding: 1rem;
-  padding-top: 0;
+  padding: 0;
 
   &::placeholder {
     color: var(--card-text);
@@ -88,16 +87,19 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  overflow: hidden;
 }
 .stampsContainer {
-  width: 100%;
   display: flex;
   gap: 0.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 .stampButton {
   border-radius: 0;
   aspect-ratio: 1 / 1;
   width: clamp(4rem, 12vw, 6rem);
+  flex-shrink: 0;
   position: relative;
   padding: 0.5rem;
   background-color: transparent;
@@ -118,6 +120,33 @@
   font-size: 0.875rem;
   color: var(--text);
 }
+.searchInput {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--card);
+  border-radius: 50px;
+  background-color: transparent;
+  color: var(--card);
+
+  &::placeholder {
+    color: var(--card);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--text);
+    box-shadow: 0 0 5px var(--text);
+  }
+}
+
+.characterCount {
+  position: absolute;
+  bottom: 0;
+  right: 0.5rem;
+  font-size: 0.5rem;
+  color: var(--card-text);
+  opacity: 0.7;
+}
 
 @media (width >= 64rem) {
   .inputGroup,
@@ -132,5 +161,8 @@
 
   .subtitle {
     font-size: 1rem;
+  }
+  .characterCount {
+    font-size: 0.75rem;
   }
 }
