@@ -1,0 +1,11 @@
+.svgButton {
+  padding: 0;
+  width: 2.5rem;
+  width: 2.5rem ;
+  background-color: var(--card);
+  text-align: center;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

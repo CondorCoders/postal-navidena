@@ -1,6 +1,7 @@
 .button {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
+  font-weight: bolder;
   border: none;
   border-radius: 1000px;
   background-color: var(--card);

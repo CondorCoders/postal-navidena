@@ -10,7 +10,7 @@
   justify-content: center;
   aspect-ratio: 16 / 9;
   border: 5px solid var(--card);
-  border-radius: 8px;
+  border-radius: 5px;
   position: relative;
 }
 .postalContainer {

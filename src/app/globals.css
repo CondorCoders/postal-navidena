@@ -59,6 +59,23 @@ a {
   --card-text: #000;
 }
 
+html[data-background-theme="classic"] {
+  color: var(--text);
+  background: var(--background);
+  background-image: none;
+}
+
+html[data-background-theme="diagonal"] {
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 32px, var(--background) 32px, var(--background) 64px);
+  background-color: var(--card);
+}
+
+html[data-background-theme="diamond"] {
+  background: repeating-conic-gradient(from 45deg, var(--background) 0% 25%, var(--card) 0% 50%);
+  background-size: 60px 60px;
+  background-color: var(--card);
+}
+
 .srOnly {
   visibility: hidden;
   position: absolute;
