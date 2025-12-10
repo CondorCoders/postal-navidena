@@ -92,8 +92,11 @@
 .stampsContainer {
   display: flex;
   gap: 0.5rem;
-  overflow-x: auto;
+  overflow: scroll;
   overflow-y: hidden;
+  scrollbar-color: var(--background) var(--card);
+  padding-top: 0.2rem;
+  padding-bottom: 0.4rem;
 }
 .stampButton {
   border-radius: 0;

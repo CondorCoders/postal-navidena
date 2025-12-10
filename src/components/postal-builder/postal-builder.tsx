@@ -3,8 +3,9 @@
 import { useTheme } from "@/context/theme-context";
 import { useEffect, useRef, useState } from "react";
 import styles from "./postal-builder.module.css";
-import { ThemeType } from "./postal-builder.types";
+import { ThemeType, BackgroundThemeType } from "./postal-builder.types";
 import { Button } from "../button/button";
+import { SVGButton } from "../svg-icons";
 import { FieldErrors, UseFormSetValue } from "react-hook-form";
 import { PostalFormData } from "../postal-form/postal-form";
 import { stickers } from "@/config/stickers";
@@ -22,6 +23,7 @@ import useImage from "use-image";
 import Konva from "konva";
 
 const themes: ThemeType[] = ["red", "green", "wood"];
+const backgroundThemes: BackgroundThemeType[] = ["classic", "snow", "diamond", "diagonal"];
 
 interface PostalBuilderProps {
   className?: string;
@@ -154,7 +156,7 @@ export const PostalBuilder = ({
   setValue,
   errors,
 }: PostalBuilderProps) => {
-  const { setTheme, theme: currentTheme } = useTheme();
+  const { setTheme, theme: currentTheme, setBackgroundTheme } = useTheme();
   const fileRef = useRef<HTMLInputElement | null>(null);
   const postalRef = useRef<HTMLDivElement | null>(null);
   const [canvaSize, setCanvaSize] = useState({ width: 300, height: 200 });
@@ -285,6 +287,17 @@ export const PostalBuilder = ({
                   theme === currentTheme && styles.themeSelected
                 }`}
                 onClick={() => setTheme(theme)}
+              />
+            ))}
+          </div>
+          <div className={styles.themeSelector}>
+            <h2 className={`${styles.subtitle} srOnly`}>Selecciona un tipo de fondo:</h2>
+            {backgroundThemes.map((bTheme) => (
+              <SVGButton
+                key={bTheme}
+                svgName={bTheme}
+                type="button"
+                onClick={() => setBackgroundTheme(bTheme)}
               />
             ))}
           </div>
