@@ -1,5 +1,5 @@
 "use client";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import styles from "./postal-back.module.css";
 import { PostalFormData } from "../postal-form/postal-form";
 import { stamps } from "@/config/stamps";
@@ -11,12 +11,16 @@ interface PostalBackProps {
   className?: string;
   register: UseFormRegister<PostalFormData>;
   errors: FieldErrors<PostalFormData>;
+  isVertical?: boolean;
+  setValue: UseFormSetValue<PostalFormData>;
 }
 
 export const PostalBack = ({
   className,
   register,
   errors,
+  isVertical = false,
+  setValue,
 }: PostalBackProps) => {
   const stampsKeys = Object.keys(stamps);
   const [stampsVisible, setStampsVisible] = useState(stampsKeys);
@@ -33,7 +37,11 @@ export const PostalBack = ({
 
   return (
     <div className={`${styles.container} ${className}`}>
-      <div className={styles.postalBack}>
+      <div
+        className={`${styles.postalBack} ${
+          isVertical ? styles.postalBackVertical : ""
+        }`}
+      >
         <div className={styles.content}>
           <div className={styles.names}>
             <div className={styles.inputGroup}>
@@ -97,7 +105,10 @@ export const PostalBack = ({
               className={`${styles.stampButton} ${
                 selectedStamp === key ? styles.stampSelected : ""
               }`}
-              onClick={() => setSelectedStamp(key)}
+              onClick={() => {
+                setSelectedStamp(key);
+                setValue("stamp", key);
+              }}
             >
               <Image fill src={stamps[key].src} alt={stamps[key].alt} />
             </Button>

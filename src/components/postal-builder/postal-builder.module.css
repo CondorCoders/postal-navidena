@@ -4,6 +4,7 @@
   gap: 1rem;
 }
 .postal {
+  width: 100%;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -13,10 +14,16 @@
   border-radius: 8px;
   position: relative;
 }
+.postalVertical {
+  aspect-ratio: 4 / 5;
+  max-width: 480px;
+}
 .postalContainer {
   position: relative;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 1rem;
 }
 .postalImage {
@@ -43,6 +50,7 @@
 }
 
 .settingsContainer {
+  width: 100%;
   display: flex;
   flex-direction: column-reverse;
   justify-content: space-between;
@@ -74,7 +82,11 @@
   box-shadow: 0 0 8px var(--card);
   opacity: 1;
 }
+.stickersContainer {
+  width: 100%;
+}
 .stickersSelector {
+  width: 100%;
   display: flex;
   gap: 1rem;
   overflow-x: auto;
@@ -99,7 +111,7 @@
   object-fit: contain;
 }
 
-@media (width >= 64rem) {
+@media (width >= 80rem) {
   .settingsContainer {
     flex-direction: row;
   }

@@ -30,6 +30,8 @@ const PostalFormSchema = z.object({
         file && ["image/jpeg", "image/png", "image/gif"].includes(file.type),
       "Solo se permiten imágenes JPEG, PNG o GIF"
     ),
+  theme: z.string().min(1, "El color es obligatorio"),
+  stamp: z.string().min(1, "El sello es obligatorio"),
 });
 
 export type PostalFormData = z.infer<typeof PostalFormSchema>;
@@ -37,6 +39,7 @@ export type PostalFormData = z.infer<typeof PostalFormSchema>;
 export const PostalForm = () => {
   const [step, setStep] = useState(1);
   const [isPending, startTransition] = useTransition();
+  const [isVertical, setIsVertical] = useState(false);
 
   const {
     register,
@@ -54,6 +57,8 @@ export const PostalForm = () => {
       formData.append("toName", data.toName);
       formData.append("message", data.message);
       formData.append("file", data.file);
+      formData.append("theme", data.theme);
+      formData.append("stamp", data.stamp);
 
       try {
         const response = await createPostal(formData);
@@ -67,25 +72,32 @@ export const PostalForm = () => {
 
   return (
     <form onSubmit={handleSubmit(handlePostalSubmit)} className={styles.form}>
-      <h1 className={styles.title}>
-        {step === 1
-          ? "Decora tu postal"
-          : step === 2
-          ? "Escribe tu mensaje"
-          : "Revisa y envía tu postal"}
-      </h1>
-      <PostalBuilder
-        className={step === 1 ? styles.visible : styles.hidden}
-        setValue={setValue}
-        errors={errors}
-      />
+      <div className={styles.titleContainer}>
+        <h1 className={styles.title}>
+          {step === 1
+            ? "Hora de decorar tu postal"
+            : step === 2
+            ? "Escribe tu mensaje"
+            : "Revisa y envía tu postal"}
+        </h1>
+      </div>
 
-      <PostalBack
-        register={register}
-        errors={errors}
-        className={step === 2 ? styles.visible : styles.hidden}
-      />
+      <div className={styles.builderContainer}>
+        <PostalBuilder
+          className={step === 1 ? styles.visible : styles.hidden}
+          setValue={setValue}
+          errors={errors}
+          onVerticalChange={setIsVertical}
+        />
 
+        <PostalBack
+          register={register}
+          errors={errors}
+          className={step === 2 ? styles.visible : styles.hidden}
+          isVertical={isVertical}
+          setValue={setValue}
+        />
+      </div>
       <div className={styles.buttonsContainer}>
         <div className={styles.buttonGroup}>
           {step > 1 && (
