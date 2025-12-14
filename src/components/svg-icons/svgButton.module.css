@@ -8,4 +8,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  &:hover {
+    background-color: var(--card-text);
+    color: var(--card);
+    svg {
+      path {
+        fill: var(--card);
+        transition: fill 0.2s ease-in-out;
+      }
+    }
+  }
 }
