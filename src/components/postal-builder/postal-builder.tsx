@@ -25,6 +25,7 @@ const themes: ThemeType[] = ["red", "green", "wood"];
 
 interface PostalBuilderProps {
   className?: string;
+  flip: boolean;
   setValue: UseFormSetValue<PostalFormData>;
   errors: FieldErrors<PostalFormData>;
   onVerticalChange?: (isVertical: boolean) => void;
@@ -198,6 +199,7 @@ export const PostalBuilder = ({
   setValue,
   errors,
   onVerticalChange,
+  flip,
 }: PostalBuilderProps) => {
   const { setTheme, theme: currentTheme } = useTheme();
   const fileRef = useRef<HTMLInputElement | null>(null);
@@ -279,54 +281,63 @@ export const PostalBuilder = ({
     };
   }, [isVertical]);
 
+  const handleTheme = (theme: ThemeType) => {
+    setTheme(theme);
+    setValue("theme", theme);
+  };
+
   return (
-    <div className={`${styles.container} ${className}`}>
-      <div className={styles.postalContainer}>
+    <div className={`${styles.container}`}>
+      <div className={styles.postalWrapper}>
         <div
           ref={postalRef}
-          className={`${styles.postal} ${
-            isVertical ? styles.postalVertical : ""
-          }`}
+          className={`${styles.postalInner} ${flip ? styles.flip : ""}`}
         >
-          <Stage
-            width={canvaSize.width}
-            height={canvaSize.height}
-            onMouseDown={checkDeselect}
-            onTouchStart={checkDeselect}
+          <div
+            className={`${styles.postal} ${
+              isVertical ? styles.postalVertical : ""
+            } `}
           >
-            <Layer>
-              {imageSrc && (
-                <BackgroundImage
-                  src={imageSrc}
-                  width={canvaSize.width}
-                  height={canvaSize.height}
-                />
-              )}
-            </Layer>
-            <Layer>
-              {!!canvaStickers.length &&
-                canvaStickers.map((sticker, index) => (
-                  <LayerImage
-                    key={index}
-                    id={sticker.id}
-                    onSelect={() => setSelectedStickerId(index)}
-                    isSelected={selectedStickerId === index}
-                    deleteSticker={deleteSticker}
-                    updateSticker={updateSticker}
-                    src={sticker.src}
-                    x={sticker.x}
-                    y={sticker.y}
-                    width={sticker.width || 100}
-                    height={sticker.height || 100}
-                    draggable
+            <Stage
+              width={canvaSize.width}
+              height={canvaSize.height}
+              onMouseDown={checkDeselect}
+              onTouchStart={checkDeselect}
+            >
+              <Layer>
+                {imageSrc && (
+                  <BackgroundImage
+                    src={imageSrc}
+                    width={canvaSize.width}
+                    height={canvaSize.height}
                   />
-                ))}
-            </Layer>
-          </Stage>
+                )}
+              </Layer>
+              <Layer>
+                {!!canvaStickers.length &&
+                  canvaStickers.map((sticker, index) => (
+                    <LayerImage
+                      key={index}
+                      id={sticker.id}
+                      onSelect={() => setSelectedStickerId(index)}
+                      isSelected={selectedStickerId === index}
+                      deleteSticker={deleteSticker}
+                      updateSticker={updateSticker}
+                      src={sticker.src}
+                      x={sticker.x}
+                      y={sticker.y}
+                      width={sticker.width || 100}
+                      height={sticker.height || 100}
+                      draggable
+                    />
+                  ))}
+              </Layer>
+            </Stage>
+          </div>
         </div>
-        {errors?.file && <p>{errors.file.message}</p>}
-
-        <div className={styles.settingsContainer}>
+      </div>
+      <div className={`${styles.editContainer} ${className}`}>
+        <div className={`${styles.settingsContainer} `}>
           <div className={styles.themeSelector}>
             <h2 className={`${styles.subtitle} srOnly`}>Selecciona un tema:</h2>
             {themes.map((theme) => (
@@ -337,10 +348,7 @@ export const PostalBuilder = ({
                 className={`${styles.themeButton} ${
                   theme === currentTheme && styles.themeSelected
                 }`}
-                onClick={() => {
-                  setTheme(theme);
-                  setValue("theme", theme);
-                }}
+                onClick={() => handleTheme(theme)}
               />
             ))}
           </div>

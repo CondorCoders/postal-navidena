@@ -10,6 +10,7 @@ import { useTheme } from "@/context/theme-context";
 import { PostalBuilder } from "../postal-builder/postal-builder";
 import { Button } from "../button/button";
 import { PostalBack } from "../postal-back/postal-back";
+import { Navigation } from "./navigation/navigation";
 
 const PostalFormSchema = z.object({
   fromName: z.string().min(1, "El nombre del remitente es obligatorio"),
@@ -30,7 +31,7 @@ const PostalFormSchema = z.object({
         file && ["image/jpeg", "image/png", "image/gif"].includes(file.type),
       "Solo se permiten imágenes JPEG, PNG o GIF"
     ),
-  theme: z.string().min(1, "El color es obligatorio"),
+  theme: z.string().min(1, "El tema es obligatorio"),
   stamp: z.string().min(1, "El sello es obligatorio"),
 });
 
@@ -40,14 +41,19 @@ export const PostalForm = () => {
   const [step, setStep] = useState(1);
   const [isPending, startTransition] = useTransition();
   const [isVertical, setIsVertical] = useState(false);
+  const [flip, setFlip] = useState(false);
 
   const {
     register,
     handleSubmit,
     setValue,
+    trigger,
     formState: { errors },
   } = useForm<PostalFormData>({
     resolver: zodResolver(PostalFormSchema),
+    defaultValues: {
+      theme: "red",
+    },
   });
 
   const handlePostalSubmit = (data: PostalFormData) => {
@@ -70,6 +76,8 @@ export const PostalForm = () => {
     });
   };
 
+  console.log(step);
+
   return (
     <form onSubmit={handleSubmit(handlePostalSubmit)} className={styles.form}>
       <div className={styles.titleContainer}>
@@ -84,6 +92,7 @@ export const PostalForm = () => {
 
       <div className={styles.builderContainer}>
         <PostalBuilder
+          flip={flip}
           className={step === 1 ? styles.visible : styles.hidden}
           setValue={setValue}
           errors={errors}
@@ -91,6 +100,7 @@ export const PostalForm = () => {
         />
 
         <PostalBack
+          flip={flip}
           register={register}
           errors={errors}
           className={step === 2 ? styles.visible : styles.hidden}
@@ -98,25 +108,13 @@ export const PostalForm = () => {
           setValue={setValue}
         />
       </div>
-      <div className={styles.buttonsContainer}>
-        <div className={styles.buttonGroup}>
-          {step > 1 && (
-            <Button type="button" onClick={() => setStep(step - 1)}>
-              Anterior
-            </Button>
-          )}
-          {step < 3 && (
-            <Button type="button" onClick={() => setStep(step + 1)}>
-              Siguiente
-            </Button>
-          )}
-          {step === 3 && (
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Creando..." : "Crear Postal"}
-            </Button>
-          )}
-        </div>
-      </div>
+      <Navigation
+        step={step}
+        setStep={setStep}
+        isPending={isPending}
+        trigger={trigger}
+        setFlip={setFlip}
+      />
     </form>
   );
 };
