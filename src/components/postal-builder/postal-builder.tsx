@@ -26,9 +26,11 @@ const themes: ThemeType[] = ["red", "green", "wood"];
 interface PostalBuilderProps {
   className?: string;
   flip: boolean;
+  setFlip: (flip: boolean) => void;
   setValue: UseFormSetValue<PostalFormData>;
   errors: FieldErrors<PostalFormData>;
   onVerticalChange?: (isVertical: boolean) => void;
+  readonly?: boolean;
 }
 
 interface KonvaImageNode {
@@ -200,6 +202,8 @@ export const PostalBuilder = ({
   errors,
   onVerticalChange,
   flip,
+  setFlip,
+  readonly,
 }: PostalBuilderProps) => {
   const { setTheme, theme: currentTheme } = useTheme();
   const fileRef = useRef<HTMLInputElement | null>(null);
@@ -286,12 +290,21 @@ export const PostalBuilder = ({
     setValue("theme", theme);
   };
 
+  const handlePostalFlip = () => {
+    setFlip(!flip);
+  };
+
   return (
-    <div className={`${styles.container}`}>
-      <div className={styles.postalWrapper}>
+    <div
+      className={`${styles.container}`}
+      onClick={readonly ? handlePostalFlip : undefined}
+    >
+      <div
+        className={`${styles.postalWrapper} ${readonly ? styles.readonly : ""}`}
+      >
         <div
           ref={postalRef}
-          className={`${styles.postalInner} ${flip ? styles.flip : ""}`}
+          className={`${styles.postalInner} ${flip ? styles.flip : ""} `}
         >
           <div
             className={`${styles.postal} ${
@@ -336,7 +349,14 @@ export const PostalBuilder = ({
           </div>
         </div>
       </div>
+      {readonly && (
+        <p className={styles.flipInstruction}>
+          Da click en la postal para voltearla
+        </p>
+      )}
       <div className={`${styles.editContainer} ${className}`}>
+        {errors.file && <p className={styles.error}>{errors.file.message}</p>}
+
         <div className={`${styles.settingsContainer} `}>
           <div className={styles.themeSelector}>
             <h2 className={`${styles.subtitle} srOnly`}>Selecciona un tema:</h2>

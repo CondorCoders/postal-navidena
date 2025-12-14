@@ -11,9 +11,19 @@
     z-index: 1;
   }
 }
+.readonly:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+
+  .postalBack,
+  .postalBackVertical {
+    box-shadow: 0 0 20px var(--card);
+  }
+}
 .postalWrapper {
   width: 100%;
   perspective: 1000px;
+  transition: transform 0.3s;
 }
 .postalInner {
   width: 100%;

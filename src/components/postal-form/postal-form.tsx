@@ -6,9 +6,7 @@ import z from "zod";
 import styles from "./postal-form.module.css";
 import { useState, useTransition } from "react";
 import { createPostal } from "@/actions/postal";
-import { useTheme } from "@/context/theme-context";
 import { PostalBuilder } from "../postal-builder/postal-builder";
-import { Button } from "../button/button";
 import { PostalBack } from "../postal-back/postal-back";
 import { Navigation } from "./navigation/navigation";
 
@@ -76,8 +74,6 @@ export const PostalForm = () => {
     });
   };
 
-  console.log(step);
-
   return (
     <form onSubmit={handleSubmit(handlePostalSubmit)} className={styles.form}>
       <div className={styles.titleContainer}>
@@ -97,6 +93,8 @@ export const PostalForm = () => {
           setValue={setValue}
           errors={errors}
           onVerticalChange={setIsVertical}
+          readonly={step === 3}
+          setFlip={setFlip}
         />
 
         <PostalBack
@@ -106,8 +104,11 @@ export const PostalForm = () => {
           className={step === 2 ? styles.visible : styles.hidden}
           isVertical={isVertical}
           setValue={setValue}
+          readonly={step === 3}
+          setFlip={setFlip}
         />
       </div>
+
       <Navigation
         step={step}
         setStep={setStep}

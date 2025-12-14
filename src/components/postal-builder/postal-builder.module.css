@@ -14,11 +14,28 @@
 .postalWrapper {
   width: 100%;
   perspective: 1000px;
+  transition: transform 0.3s;
 }
 .postalInner {
   width: 100%;
   transition: transform 0.8s;
   transform-style: preserve-3d;
+}
+.readonly:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+
+  .postal,
+  .postalVertical {
+    box-shadow: 0 0 20px var(--card);
+  }
+}
+.flipInstruction {
+  width: 100%;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text);
+  text-align: center;
 }
 .flip {
   transform: rotateY(180deg);

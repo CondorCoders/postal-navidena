@@ -12,8 +12,10 @@ interface PostalBackProps {
   register: UseFormRegister<PostalFormData>;
   errors: FieldErrors<PostalFormData>;
   isVertical?: boolean;
+  setFlip: (flip: boolean) => void;
   setValue: UseFormSetValue<PostalFormData>;
   flip?: boolean;
+  readonly?: boolean;
 }
 
 export const PostalBack = ({
@@ -23,6 +25,8 @@ export const PostalBack = ({
   isVertical = false,
   setValue,
   flip,
+  readonly,
+  setFlip,
 }: PostalBackProps) => {
   const stampsKeys = Object.keys(stamps);
   const [stampsVisible, setStampsVisible] = useState(stampsKeys);
@@ -42,9 +46,18 @@ export const PostalBack = ({
     setValue("stamp", key);
   };
 
+  const handlePostalFlip = () => {
+    setFlip(!flip);
+  };
+
   return (
-    <div className={`${styles.container} `}>
-      <div className={`${styles.postalWrapper}`}>
+    <div
+      className={`${styles.container} `}
+      onClick={readonly ? handlePostalFlip : undefined}
+    >
+      <div
+        className={`${styles.postalWrapper} ${readonly ? styles.readonly : ""}`}
+      >
         <div className={`${styles.postalInner} ${flip ? styles.flip : ""} `}>
           <div
             className={`${styles.postalBack} ${
@@ -60,6 +73,7 @@ export const PostalBack = ({
                       type="text"
                       {...register("fromName")}
                       className={styles.input}
+                      readOnly={readonly}
                     />
                   </div>
 
@@ -74,6 +88,7 @@ export const PostalBack = ({
                       type="text"
                       {...register("toName")}
                       className={styles.input}
+                      readOnly={readonly}
                     />
                   </div>
                   {errors.toName && (
@@ -104,6 +119,7 @@ export const PostalBack = ({
                 className={styles.textarea}
                 maxLength={125}
                 onChange={(e) => setMessageLength(e.target.value.length)}
+                readOnly={readonly}
               ></textarea>
               <div className={styles.characterCount}>{messageLength}/125</div>
               {errors.message && (
@@ -113,7 +129,6 @@ export const PostalBack = ({
           </div>
         </div>
       </div>
-
       <div className={`${styles.stampsSection} ${className}`}>
         <h2 className={`${styles.subtitle} srOnly`}>Estampas</h2>
         <input

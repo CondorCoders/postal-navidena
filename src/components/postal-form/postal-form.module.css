@@ -38,6 +38,7 @@
 .hidden.hidden {
   display: none;
 }
+
 @media (width >= 80rem) {
   .form {
     display: grid;
