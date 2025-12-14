@@ -1,0 +1,14 @@
+.buttonsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+}
+@media (width >= 80rem) {
+  .buttonsContainer {
+    margin-top: auto;
+  }
+}

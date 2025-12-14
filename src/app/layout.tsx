@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="red">
-      <body className={`${merriweather.variable}`}>
+      <body className={`${merriweather.variable} font-sans`}>
         <ThemeProvider>
           <LightRays
             raysOrigin="top-center"
