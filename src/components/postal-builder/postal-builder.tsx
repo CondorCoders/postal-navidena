@@ -25,8 +25,12 @@ const themes: ThemeType[] = ["red", "green", "wood"];
 
 interface PostalBuilderProps {
   className?: string;
+  flip: boolean;
+  setFlip: (flip: boolean) => void;
   setValue: UseFormSetValue<PostalFormData>;
   errors: FieldErrors<PostalFormData>;
+  onVerticalChange?: (isVertical: boolean) => void;
+  readonly?: boolean;
 }
 
 interface KonvaImageNode {
@@ -82,16 +86,12 @@ const LayerImage = ({
           });
         }}
         onTransformEnd={() => {
-          // transformer is changing scale of the node
-          // and NOT its width or height
-          // but in the store we have only width and height
-          // to match the data better we will reset scale on transform end
           const node = groupRef.current;
           if (node) {
             const scaleX = node.scaleX();
             const scaleY = node.scaleY();
 
-            // we will reset it back
+            // reiniciamos la escala
             node.scaleX(1);
             node.scaleY(1);
 
@@ -128,7 +128,7 @@ const LayerImage = ({
             "bottom-right",
           ]}
           boundBoxFunc={(oldBox, newBox) => {
-            // limit resize
+            // limitar redimensionamiento
             if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
               return oldBox;
             }
@@ -144,21 +144,73 @@ interface BackgroundImageProps extends Omit<Konva.ImageConfig, "image"> {
   src: string;
 }
 
-const BackgroundImage = ({ src, ...rest }: BackgroundImageProps) => {
+const BackgroundImage = ({
+  src,
+  width,
+  height,
+  ...rest
+}: BackgroundImageProps) => {
   const [image] = useImage(src, "anonymous");
-  return <KonvaImage {...rest} image={image} id="base" />;
+
+  if (!image || !width || !height) {
+    return (
+      <KonvaImage
+        {...rest}
+        image={image}
+        id="base"
+        width={width}
+        height={height}
+      />
+    );
+  }
+
+  // Calcular dimensiones para comportamiento object-fit: cover
+  const imageAspect = image.width / image.height;
+  const containerAspect = width / height;
+
+  let renderWidth = width;
+  let renderHeight = height;
+  let offsetX = 0;
+  let offsetY = 0;
+
+  if (imageAspect > containerAspect) {
+    // La imagen es más ancha que el contenedor
+    renderWidth = height * imageAspect;
+    offsetX = (width - renderWidth) / 2;
+  } else {
+    // La imagen es más alta que el contenedor
+    renderHeight = width / imageAspect;
+    offsetY = (height - renderHeight) / 2;
+  }
+
+  return (
+    <KonvaImage
+      {...rest}
+      image={image}
+      id="base"
+      x={offsetX}
+      y={offsetY}
+      width={renderWidth}
+      height={renderHeight}
+    />
+  );
 };
 
 export const PostalBuilder = ({
   className,
   setValue,
   errors,
+  onVerticalChange,
+  flip,
+  setFlip,
+  readonly,
 }: PostalBuilderProps) => {
   const { setTheme, theme: currentTheme } = useTheme();
   const fileRef = useRef<HTMLInputElement | null>(null);
   const postalRef = useRef<HTMLDivElement | null>(null);
   const [canvaSize, setCanvaSize] = useState({ width: 300, height: 200 });
   const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [isVertical, setIsVertical] = useState(false);
   const [canvaStickers, setCanvaStickers] = useState<KonvaImageNode[]>([]);
   const [selectedStickerId, setSelectedStickerId] = useState<number | null>(
     null
@@ -175,7 +227,6 @@ export const PostalBuilder = ({
       },
     ]);
   };
-
   const updateSticker = (sticker: KonvaImageNode) => {
     setCanvaStickers((prevStickers) =>
       prevStickers.map((st) =>
@@ -188,19 +239,6 @@ export const PostalBuilder = ({
       prevStickers.filter((st) => st.id !== stickerId)
     );
   };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImageSrc(e?.target?.result as string);
-        setValue("file", file);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const checkDeselect = (
     e: Konva.KonvaEventObject<MouseEvent> | Konva.KonvaEventObject<TouchEvent>
   ) => {
@@ -210,70 +248,116 @@ export const PostalBuilder = ({
     }
   };
 
-  useEffect(() => {
-    if (postalRef.current) {
-      setCanvaSize({
-        width: postalRef.current.clientWidth,
-        height: postalRef.current.clientHeight,
-      });
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new window.Image();
+        img.onload = () => {
+          const vertical = img.height > img.width;
+          setIsVertical(vertical);
+          onVerticalChange?.(vertical);
+        };
+        img.src = e?.target?.result as string;
+        setImageSrc(e?.target?.result as string);
+        setValue("file", file);
+      };
+      reader.readAsDataURL(file);
     }
+  };
 
-    window.addEventListener("resize", () => {
+  useEffect(() => {
+    const updateCanvasSize = () => {
       if (postalRef.current) {
         setCanvaSize({
           width: postalRef.current.clientWidth,
           height: postalRef.current.clientHeight,
         });
       }
-    });
-    return () => {
-      window.removeEventListener("resize", () => {});
     };
-  }, []);
+
+    updateCanvasSize();
+
+    window.addEventListener("resize", updateCanvasSize);
+    return () => {
+      window.removeEventListener("resize", updateCanvasSize);
+    };
+  }, [isVertical]);
+
+  const handleTheme = (theme: ThemeType) => {
+    setTheme(theme);
+    setValue("theme", theme);
+  };
+
+  const handlePostalFlip = () => {
+    setFlip(!flip);
+  };
 
   return (
-    <div className={`${styles.container} ${className}`}>
-      <div className={styles.postalContainer}>
-        <div ref={postalRef} className={styles.postal}>
-          <Stage
-            width={canvaSize.width}
-            height={canvaSize.height}
-            onMouseDown={checkDeselect}
-            onTouchStart={checkDeselect}
+    <div
+      className={`${styles.container}`}
+      onClick={readonly ? handlePostalFlip : undefined}
+    >
+      <div
+        className={`${styles.postalWrapper} ${readonly ? styles.readonly : ""}`}
+      >
+        <div
+          ref={postalRef}
+          className={`${styles.postalInner} ${flip ? styles.flip : ""} `}
+        >
+          <div
+            className={`${styles.postal} ${
+              isVertical ? styles.postalVertical : ""
+            } `}
           >
-            <Layer>
-              {imageSrc && (
-                <BackgroundImage
-                  src={imageSrc}
-                  width={canvaSize.width}
-                  height={canvaSize.height}
-                />
-              )}
-            </Layer>
-            <Layer>
-              {!!canvaStickers.length &&
-                canvaStickers.map((sticker, index) => (
-                  <LayerImage
-                    key={index}
-                    id={sticker.id}
-                    onSelect={() => setSelectedStickerId(index)}
-                    isSelected={selectedStickerId === index}
-                    deleteSticker={deleteSticker}
-                    updateSticker={updateSticker}
-                    src={sticker.src}
-                    x={sticker.x}
-                    y={sticker.y}
-                    width={sticker.width || 100}
-                    height={sticker.height || 100}
-                    draggable
+            <Stage
+              width={canvaSize.width}
+              height={canvaSize.height}
+              onMouseDown={checkDeselect}
+              onTouchStart={checkDeselect}
+            >
+              <Layer>
+                {imageSrc && (
+                  <BackgroundImage
+                    src={imageSrc}
+                    width={canvaSize.width}
+                    height={canvaSize.height}
                   />
-                ))}
-            </Layer>
-          </Stage>
+                )}
+              </Layer>
+              <Layer>
+                {!!canvaStickers.length &&
+                  canvaStickers.map((sticker, index) => (
+                    <LayerImage
+                      key={index}
+                      id={sticker.id}
+                      onSelect={() => setSelectedStickerId(index)}
+                      isSelected={selectedStickerId === index}
+                      deleteSticker={deleteSticker}
+                      updateSticker={updateSticker}
+                      src={sticker.src}
+                      x={sticker.x}
+                      y={sticker.y}
+                      width={sticker.width || 100}
+                      height={sticker.height || 100}
+                      draggable
+                    />
+                  ))}
+              </Layer>
+            </Stage>
+          </div>
         </div>
-        {errors?.file && <p>{errors.file.message}</p>}
+      </div>
+      {readonly && (
+        <p className={styles.flipInstruction}>
+          Da click en la postal para voltearla
+        </p>
+      )}
+      <div className={`${styles.editContainer} ${className}`}>
+        {errors.file && <p className={styles.error}>{errors.file.message}</p>}
 
-        <div className={styles.settingsContainer}>
+        <div className={`${styles.settingsContainer} `}>
           <div className={styles.themeSelector}>
             <h2 className={`${styles.subtitle} srOnly`}>Selecciona un tema:</h2>
             {themes.map((theme) => (
@@ -284,7 +368,7 @@ export const PostalBuilder = ({
                 className={`${styles.themeButton} ${
                   theme === currentTheme && styles.themeSelected
                 }`}
-                onClick={() => setTheme(theme)}
+                onClick={() => handleTheme(theme)}
               />
             ))}
           </div>
