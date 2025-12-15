@@ -12,8 +12,6 @@ export const createPostal = async (
       body: data,
     });
 
-    console.log("API response status:", response);
-
     const slug = await response.json();
     return slug;
   } catch (error) {

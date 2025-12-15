@@ -4,5 +4,8 @@ export interface Postal {
   fromName: string;
   toName: string;
   message: string;
-  file: File;
+  file: File | string;
+  theme: string;
+  backgroundTheme?: string;
+  stamp: string;
 }

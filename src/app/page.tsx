@@ -1,5 +1,5 @@
 import { PostalForm } from "@/components/postal-form/postal-form";
-import { Snow } from "@/components/snow";
+import { Snow } from "@/components/snow/snow";
 import styles from "./page.module.css";
 
 export default function Home() {

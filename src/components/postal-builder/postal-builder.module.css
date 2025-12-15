@@ -30,13 +30,6 @@
     box-shadow: 0 0 20px var(--card);
   }
 }
-.flipInstruction {
-  width: 100%;
-  text-align: center;
-  font-size: 0.875rem;
-  color: var(--text);
-  text-align: center;
-}
 .flip {
   transform: rotateY(180deg);
 }
@@ -59,22 +52,17 @@
   aspect-ratio: 4 / 5;
   max-width: 480px;
 }
-/* .postalContainer {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-} */
 .postalImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+.changeButton {
+  margin: auto;
+}
 .uploadButton {
   position: absolute;
-  top: 45%;
+  top: 35%;
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
@@ -97,7 +85,7 @@
 .settingsContainer {
   width: 100%;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   justify-content: space-between;
   gap: 1rem;
 }
@@ -113,13 +101,10 @@
   padding: 0;
   width: 2.5rem;
   height: 2.5rem;
-
-  opacity: 0.5;
   transition: box-shadow 0.2s ease-in-out, opacity 0.2s ease-in-out;
 
   &:hover {
-    opacity: 1;
-    background-color: transparent;
+    background-color: var(--background);
     box-shadow: 0 0 8px var(--card);
   }
 }
@@ -159,9 +144,12 @@
 
 @media (width >= 80rem) {
   .container {
-    gap: 3rem;
+    gap: 1.5rem;
   }
   .settingsContainer {
     flex-direction: row;
+  }
+  .uploadButton {
+    top: 45%;
   }
 }

@@ -161,7 +161,7 @@
 .stampButton {
   border-radius: 0;
   aspect-ratio: 1 / 1;
-  width: clamp(4rem, 12vw, 6rem);
+  width: clamp(5rem, 12vw, 6rem);
   flex-shrink: 0;
   position: relative;
   padding: 0.5rem;
@@ -211,7 +211,7 @@
   opacity: 0.7;
 }
 .error {
-  font-size: 0.75rem;
+  font-size: 0.5rem;
 }
 
 @media (width >= 80rem) {
@@ -232,6 +232,9 @@
     font-size: 1rem;
   }
   .characterCount {
+    font-size: 0.75rem;
+  }
+  .error {
     font-size: 0.75rem;
   }
 }

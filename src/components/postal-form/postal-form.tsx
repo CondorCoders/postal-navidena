@@ -30,6 +30,7 @@ const PostalFormSchema = z.object({
       "Solo se permiten imágenes JPEG, PNG o GIF"
     ),
   theme: z.string().min(1, "El tema es obligatorio"),
+  backgroundTheme: z.string().optional(),
   stamp: z.string().min(1, "El sello es obligatorio"),
 });
 
@@ -49,6 +50,7 @@ export const PostalForm = () => {
     formState: { errors },
   } = useForm<PostalFormData>({
     resolver: zodResolver(PostalFormSchema),
+    mode: "onChange",
     defaultValues: {
       theme: "red",
     },
@@ -63,6 +65,7 @@ export const PostalForm = () => {
       formData.append("file", data.file);
       formData.append("theme", data.theme);
       formData.append("stamp", data.stamp);
+      formData.append("backgroundTheme", data.backgroundTheme || "");
 
       try {
         const response = await createPostal(formData);
@@ -107,6 +110,11 @@ export const PostalForm = () => {
           readonly={step === 3}
           setFlip={setFlip}
         />
+        {step === 3 && (
+          <p className={styles.flipInstruction}>
+            Da click en la postal para voltearla
+          </p>
+        )}
       </div>
 
       <Navigation
