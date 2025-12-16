@@ -43,7 +43,7 @@ export const PostalBack = ({
 
   const selectStamp = (key: string) => {
     setSelectedStamp(key);
-    setValue("stamp", key);
+    setValue("stamp", key, { shouldValidate: true, shouldDirty: true });
   };
 
   const handlePostalFlip = () => {
@@ -114,14 +114,24 @@ export const PostalBack = ({
             <div className={styles.messageInput}>
               <label htmlFor="message">Mensaje:</label>
               <textarea
-                {...register("message")}
+                {...(() => {
+                  const { onChange, ...rest } = register("message");
+                  return {
+                    ...rest,
+                    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                      setMessageLength(e.target.value.length);
+                      onChange(e);
+                    },
+                  };
+                })()}
                 placeholder="Escribe tu mensaje aquí"
                 className={styles.textarea}
                 maxLength={125}
-                onChange={(e) => setMessageLength(e.target.value.length)}
                 readOnly={readonly}
               ></textarea>
-              <div className={styles.characterCount}>{messageLength}/125</div>
+              {!readonly && (
+                <div className={styles.characterCount}>{messageLength}/125</div>
+              )}
               {errors.message && (
                 <p className={styles.error}>{errors.message.message}</p>
               )}

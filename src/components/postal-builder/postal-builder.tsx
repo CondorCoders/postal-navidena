@@ -55,6 +55,8 @@ interface LayerImageProps extends Konva.GroupConfig {
   onSelect: () => void;
   updateSticker: (newAttrs: KonvaImageNode) => void;
   deleteSticker: (stickerId: string) => void;
+  readonly?: boolean;
+  hideUI?: boolean;
 }
 const LayerImage = ({
   id,
@@ -63,6 +65,8 @@ const LayerImage = ({
   isSelected,
   updateSticker,
   deleteSticker,
+  readonly,
+  hideUI,
   ...rest
 }: LayerImageProps) => {
   const [image] = useImage(src, "anonymous");
@@ -81,50 +85,57 @@ const LayerImage = ({
       <Group
         ref={groupRef}
         {...rest}
-        onClick={onSelect}
-        onDragStart={onSelect}
-        onDragEnd={(e) => {
-          updateSticker({
-            ...rest,
-            id: id!,
-            src,
-            x: e.target.x(),
-            y: e.target.y(),
-          });
-        }}
-        onTransformEnd={() => {
-          const node = groupRef.current;
-          if (node) {
-            const scaleX = node.scaleX();
-            const scaleY = node.scaleY();
+        onClick={readonly ? undefined : onSelect}
+        onDragStart={readonly ? undefined : onSelect}
+        onDragEnd={
+          readonly
+            ? undefined
+            : (e) => {
+                updateSticker({
+                  ...rest,
+                  id: id!,
+                  src,
+                  x: e.target.x(),
+                  y: e.target.y(),
+                });
+              }
+        }
+        onTransformEnd={
+          readonly
+            ? undefined
+            : () => {
+                const node = groupRef.current;
+                if (node) {
+                  const scaleX = node.scaleX();
+                  const scaleY = node.scaleY();
 
-            // reiniciamos la escala
-            node.scaleX(1);
-            node.scaleY(1);
+                  node.scaleX(1);
+                  node.scaleY(1);
 
-            updateSticker({
-              id: id!,
-              src,
-              x: node.x(),
-              y: node.y(),
-              width: Math.max(5, node.width() * scaleX),
-              height: Math.max(5, node.height() * scaleY),
-            });
-          }
-        }}
+                  updateSticker({
+                    id: id!,
+                    src,
+                    x: node.x(),
+                    y: node.y(),
+                    width: Math.max(5, node.width() * scaleX),
+                    height: Math.max(5, node.height() * scaleY),
+                  });
+                }
+              }
+        }
       >
         <KonvaImage image={image} width={rest.width} height={rest.height} />
         <Group
           x={rest.width}
           y={-10}
-          visible={isSelected}
-          onClick={() => deleteSticker(id!)}
+          visible={isSelected && !readonly && !hideUI}
+          onClick={readonly ? undefined : () => deleteSticker(id!)}
         >
           <Circle radius={10} fill="black" />
           <Text text="X" fill="white" offsetX={4} offsetY={5} />
         </Group>
       </Group>
-      {isSelected && (
+      {isSelected && !readonly && !hideUI && (
         <Transformer
           ref={trRef}
           rotateEnabled={true}
@@ -220,11 +231,13 @@ export const PostalBuilder = ({
   } = useTheme();
   const fileRef = useRef<HTMLInputElement | null>(null);
   const postalRef = useRef<HTMLDivElement | null>(null);
+  const stageRef = useRef<Konva.Stage | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
   const [canvaSize, setCanvaSize] = useState({ width: 300, height: 200 });
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isVertical, setIsVertical] = useState(false);
   const [canvaStickers, setCanvaStickers] = useState<KonvaImageNode[]>([]);
-  const [selectedStickerId, setSelectedStickerId] = useState<number | null>(
+  const [selectedStickerId, setSelectedStickerId] = useState<string | null>(
     null
   );
 
@@ -236,6 +249,8 @@ export const PostalBuilder = ({
         src: stickerSrc,
         x: canvaSize.width / 2 - 50,
         y: canvaSize.height / 2 - 50,
+        width: 100,
+        height: 100,
       },
     ]);
   };
@@ -306,6 +321,54 @@ export const PostalBuilder = ({
     setFlip(!flip);
   };
 
+  // Convert a dataURL to a Blob for creating a File
+  const dataURLToBlob = (dataURL: string) => {
+    const parts = dataURL.split(",");
+    const mimeMatch = parts[0].match(/:(.*?);/);
+    const mime = mimeMatch ? mimeMatch[1] : "image/png";
+    const bstr = atob(parts[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
+
+  useEffect(() => {
+    if (readonly) return;
+    if (!flip) return;
+    if (!imageSrc) return;
+
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    let cancelled = false;
+    const exportImage = async () => {
+      setIsExporting(true);
+      setSelectedStickerId(null);
+      await new Promise((r) => setTimeout(r, 0));
+      await new Promise((r) => requestAnimationFrame(() => r(undefined)));
+      stage.getLayers().forEach((l) => l.batchDraw());
+      if (cancelled) return;
+      try {
+        const dataURL = stage.toDataURL({ pixelRatio: 2 });
+        const blob = dataURLToBlob(dataURL);
+        const file = new File([blob], "postal.png", { type: blob.type });
+        setValue("file", file, { shouldValidate: true, shouldDirty: true });
+      } catch (e) {
+        // ignorar errores
+      } finally {
+        if (!cancelled) setIsExporting(false);
+      }
+    };
+    exportImage();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [flip, imageSrc, readonly, setValue]);
+
   return (
     <div
       className={`${styles.container}`}
@@ -326,8 +389,9 @@ export const PostalBuilder = ({
             <Stage
               width={canvaSize.width}
               height={canvaSize.height}
-              onMouseDown={checkDeselect}
-              onTouchStart={checkDeselect}
+              ref={stageRef}
+              onMouseDown={readonly ? undefined : checkDeselect}
+              onTouchStart={readonly ? undefined : checkDeselect}
             >
               <Layer>
                 {imageSrc && (
@@ -340,12 +404,12 @@ export const PostalBuilder = ({
               </Layer>
               <Layer>
                 {!!canvaStickers.length &&
-                  canvaStickers.map((sticker, index) => (
+                  canvaStickers.map((sticker) => (
                     <LayerImage
-                      key={index}
+                      key={sticker.id}
                       id={sticker.id}
-                      onSelect={() => setSelectedStickerId(index)}
-                      isSelected={selectedStickerId === index}
+                      onSelect={() => setSelectedStickerId(sticker.id)}
+                      isSelected={selectedStickerId === sticker.id}
                       deleteSticker={deleteSticker}
                       updateSticker={updateSticker}
                       src={sticker.src}
@@ -353,7 +417,9 @@ export const PostalBuilder = ({
                       y={sticker.y}
                       width={sticker.width || 100}
                       height={sticker.height || 100}
-                      draggable
+                      draggable={!readonly}
+                      readonly={readonly}
+                      hideUI={isExporting}
                     />
                   ))}
               </Layer>

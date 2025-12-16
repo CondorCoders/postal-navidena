@@ -31,7 +31,9 @@ const PostalFormSchema = z.object({
     ),
   theme: z.string().min(1, "El tema es obligatorio"),
   backgroundTheme: z.string().optional(),
-  stamp: z.string().min(1, "El sello es obligatorio"),
+  stamp: z
+    .string({ required_error: "El sello es obligatorio" })
+    .min(1, "El sello es obligatorio"),
 });
 
 export type PostalFormData = z.infer<typeof PostalFormSchema>;
@@ -53,6 +55,7 @@ export const PostalForm = () => {
     mode: "onChange",
     defaultValues: {
       theme: "red",
+      stamp: "",
     },
   });
 
