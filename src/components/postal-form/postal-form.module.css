@@ -3,12 +3,13 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+
+  justify-content: space-between;
 }
 .title {
   font-size: 1.5rem;
   color: var(--card);
+  margin: auto;
 }
 .form {
   flex: 1;

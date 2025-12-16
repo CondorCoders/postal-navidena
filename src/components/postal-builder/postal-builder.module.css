@@ -51,6 +51,7 @@
 .postalVertical {
   aspect-ratio: 4 / 5;
   max-width: 480px;
+  margin: auto;
 }
 .postalImage {
   width: 100%;
@@ -120,6 +121,7 @@
   display: flex;
   gap: 1rem;
   overflow-x: auto;
+  scrollbar-color: var(--background) var(--card);
 }
 .sticker.sticker {
   position: relative;

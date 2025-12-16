@@ -54,6 +54,7 @@
 .postalBackVertical {
   aspect-ratio: 4 / 5;
   max-width: 480px;
+  margin: auto;
 
   .content {
     flex-direction: column-reverse;

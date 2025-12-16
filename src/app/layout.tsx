@@ -3,6 +3,7 @@ import { Merriweather } from "next/font/google";
 import "./globals.css";
 import LightRays from "@/components/light-rays/light-rays";
 import { ThemeProvider } from "@/context/theme-context";
+import { Snow } from "@/components/snow/snow";
 
 const merriweather = Merriweather({
   weight: ["400", "700"],
@@ -12,7 +13,8 @@ const merriweather = Merriweather({
 
 export const metadata: Metadata = {
   title: "Postal Navideña",
-  description: "Crea y envía postales navideñas personalizadas de forma fácil y divertida.",
+  description:
+    "Crea y envía postales navideñas personalizadas de forma fácil y divertida.",
 };
 
 export default function RootLayout({
@@ -24,6 +26,7 @@ export default function RootLayout({
     <html lang="en" data-theme="red">
       <body className={`${merriweather.variable} font-sans`}>
         <ThemeProvider>
+          <Snow />
           <LightRays
             raysOrigin="top-center"
             raysSpeed={1.5}

@@ -9,6 +9,8 @@ import { createPostal } from "@/actions/postal";
 import { PostalBuilder } from "../postal-builder/postal-builder";
 import { PostalBack } from "../postal-back/postal-back";
 import { Navigation } from "./navigation/navigation";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const PostalFormSchema = z.object({
   fromName: z.string().min(1, "El nombre del remitente es obligatorio"),
@@ -32,13 +34,14 @@ const PostalFormSchema = z.object({
   theme: z.string().min(1, "El tema es obligatorio"),
   backgroundTheme: z.string().optional(),
   stamp: z
-    .string({ required_error: "El sello es obligatorio" })
+    .string({ error: "El sello es obligatorio" })
     .min(1, "El sello es obligatorio"),
 });
 
 export type PostalFormData = z.infer<typeof PostalFormSchema>;
 
 export const PostalForm = () => {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [isPending, startTransition] = useTransition();
   const [isVertical, setIsVertical] = useState(false);
@@ -73,7 +76,9 @@ export const PostalForm = () => {
       try {
         const response = await createPostal(formData);
 
-        console.log("Postal created with response:", response);
+        if (response?.slug) {
+          router.push(`/postal/${response.slug}`);
+        }
       } catch (error) {
         console.error("Error creating postal:", error);
       }
@@ -83,6 +88,7 @@ export const PostalForm = () => {
   return (
     <form onSubmit={handleSubmit(handlePostalSubmit)} className={styles.form}>
       <div className={styles.titleContainer}>
+        <Image src="/logo.png" alt="Logo" width={50} height={50} />
         <h1 className={styles.title}>
           {step === 1
             ? "Hora de decorar tu postal"
