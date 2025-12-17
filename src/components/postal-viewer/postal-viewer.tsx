@@ -2,7 +2,7 @@
 
 import { useTheme } from "@/context/theme-context";
 import { Postal } from "@/types/postal.types";
-import { useEffect, useState } from "react";
+import { useEffect, useState, KeyboardEvent } from "react";
 import styles from "./postal-viewer.module.css";
 import Image from "next/image";
 import { stamps } from "@/config/stamps";
@@ -19,7 +19,7 @@ export const PostalViewer = ({ postal }: PostalViewerProps) => {
   const [flip, setFlip] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const postalUrl = `${window?.location.origin}/mixtape/${postal.slug}`;
+  const postalUrl = `${window?.location.origin}/postal/${postal.slug}`;
 
   useEffect(() => {
     setTheme(postal.theme);
@@ -34,6 +34,8 @@ export const PostalViewer = ({ postal }: PostalViewerProps) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const toggleFlip = () => setFlip((f) => !f);
+
   return (
     <div className={styles.postalViewer}>
       <div className={styles.postalViewerContent}>
@@ -42,7 +44,13 @@ export const PostalViewer = ({ postal }: PostalViewerProps) => {
 
           <h1>Tienes correo</h1>
         </div>
-        <div className={styles.postalContainer} onClick={() => setFlip(!flip)}>
+        <div
+          className={styles.postalContainer}
+          role="button"
+          aria-pressed={flip}
+          tabIndex={0}
+          onPointerUp={toggleFlip}
+        >
           <div className={styles.postalWrapper}>
             <div
               className={`${styles.postalInner} ${flip ? styles.flip : ""} `}
