@@ -321,10 +321,13 @@ export const PostalFront = ({
     const exportImage = async () => {
       setIsExporting(true);
       setSelectedStickerId(null);
-      await new Promise((r) => setTimeout(r, 0));
+
+      await new Promise((r) => setTimeout(r, 50));
       await new Promise((r) => requestAnimationFrame(() => r(undefined)));
-      stage.getLayers().forEach((l) => l.batchDraw());
       if (cancelled) return;
+
+      stage.getLayers().forEach((l) => l.batchDraw());
+
       try {
         const dataURL = stage.toDataURL({ pixelRatio: 2 });
         const blob = dataURLToBlob(dataURL);

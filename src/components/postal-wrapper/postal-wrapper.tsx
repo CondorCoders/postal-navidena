@@ -25,7 +25,6 @@ export const PostalWrapper = ({
   const handleInteraction = (e: React.MouseEvent | React.TouchEvent) => {
     if (!readonly || !onFlip) return;
 
-    // Don't flip if interacting with form elements
     const target = e.target as HTMLElement;
     if (target.closest("input, textarea, button, select, a") && !readonly) {
       return;
