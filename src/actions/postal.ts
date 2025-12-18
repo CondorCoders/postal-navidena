@@ -30,7 +30,6 @@ export const getPostalBySlug = async (slug: string): Promise<Postal | null> => {
     }
 
     const postal = await response.json();
-    console.log("Fetched postal data:", postal);
     return postal;
   } catch (error) {
     console.error("Error while fetching postal data from API:", error);

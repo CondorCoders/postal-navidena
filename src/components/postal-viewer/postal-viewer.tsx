@@ -12,7 +12,6 @@ import { PostalWrapper } from "../postal-wrapper/postal-wrapper";
 
 interface PostalViewerProps {
   postal: Postal;
-  postalUrl?: string;
 }
 
 export const PostalViewer = ({ postal }: PostalViewerProps) => {
@@ -20,8 +19,10 @@ export const PostalViewer = ({ postal }: PostalViewerProps) => {
   const [flip, setFlip] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isVertical, setIsVertical] = useState(false);
-
-  const postalUrl = `${window?.location.origin}/postal/${postal.slug}`;
+  const postalUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/postal/${postal.slug}`
+      : "";
 
   useEffect(() => {
     setTheme(postal.theme);
