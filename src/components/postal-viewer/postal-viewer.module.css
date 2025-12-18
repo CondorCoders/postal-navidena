@@ -11,6 +11,7 @@
 
 .postalViewerContent {
   width: 100%;
+  height: 100%;
   margin-top: auto;
   display: flex;
   flex-direction: column;
@@ -24,31 +25,16 @@
   aspect-ratio: 16 / 9;
   width: 100%;
   height: 100%;
-
-  transition: transform 0.3s;
-
-  cursor: pointer;
-
-  &:hover {
-    transform: scale(1.05);
-    .front,
-    .back {
-      box-shadow: 0 0 20px var(--card);
-    }
-  }
 }
 
-.postalWrapper {
-  width: 100%;
-  height: 100%;
-  perspective: 1000px;
+.postalContainerVertical {
+  aspect-ratio: 4 / 5;
+  max-width: 32rem;
 }
-.postalInner {
-  width: 100%;
+
+.postalWrapperCustom {
   height: 100%;
-  transition: transform 0.8s;
-  transform-style: preserve-3d;
-  position: relative;
+  z-index: 1;
 }
 
 .front {
@@ -68,6 +54,7 @@
   color: var(--card-text);
   padding: 1rem;
   width: 100%;
+  height: 100%;
   inset: 1px;
   position: absolute;
   transform: rotateY(180deg);

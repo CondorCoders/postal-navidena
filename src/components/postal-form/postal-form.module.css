@@ -3,12 +3,24 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-
+  align-items: center;
+  gap: 0.5rem;
   justify-content: space-between;
 }
 .title {
   font-size: 1.5rem;
   color: var(--card);
+  margin: auto;
+}
+.container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+.vertical {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  max-width: 480px;
   margin: auto;
 }
 .form {
@@ -46,14 +58,15 @@
   font-size: 1rem;
   color: var(--card);
   text-align: center;
-  position: absolute;
-  top: 70%;
 }
 @media (width >= 80rem) {
   .form {
     display: grid;
     grid-template-columns: 0.5fr 1fr 0.5fr;
     gap: 1.5rem;
+  }
+  .titleContainer {
+    align-items: start;
   }
   .title {
     font-size: 3.5rem;

@@ -1,0 +1,64 @@
+.stampsSection {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow: hidden;
+}
+.stampsContainer {
+  display: flex;
+  gap: 0.5rem;
+  overflow: scroll;
+  overflow-y: hidden;
+  scrollbar-color: var(--background) var(--card);
+  padding-top: 0.2rem;
+  padding-bottom: 0.4rem;
+}
+.stampButton {
+  border-radius: 0;
+  aspect-ratio: 1 / 1;
+  width: clamp(5rem, 12vw, 6rem);
+  flex-shrink: 0;
+  position: relative;
+  padding: 0.5rem;
+  background-color: transparent;
+  opacity: 0.5;
+  transition: box-shadow 0.2s ease-in-out, opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+    background-color: transparent;
+    box-shadow: 0 0 8px var(--card);
+  }
+}
+.stampSelected {
+  box-shadow: 0 0 8px var(--card);
+  opacity: 1;
+}
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--text);
+}
+.searchInput {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--card);
+  border-radius: 50px;
+  background-color: transparent;
+  color: var(--card);
+
+  &::placeholder {
+    color: var(--card);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--card);
+    box-shadow: 0 0 8px var(--card);
+  }
+}
+
+.error {
+  color: var(--error);
+  font-size: 0.875rem;
+}

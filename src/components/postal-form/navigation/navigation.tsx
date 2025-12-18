@@ -56,7 +56,11 @@ export const Navigation = ({
     <div className={styles.buttonsContainer}>
       <div className={styles.buttonGroup}>
         {step > 1 && (
-          <Button type="button" onClick={() => handleNavigation("previous")}>
+          <Button
+            type="button"
+            onClick={() => handleNavigation("previous")}
+            disabled={isPending}
+          >
             Anterior
           </Button>
         )}

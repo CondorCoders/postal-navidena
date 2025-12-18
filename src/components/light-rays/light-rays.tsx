@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import { Renderer, Program, Triangle, Mesh } from "ogl";
 import styles from "./light-rays.module.css";
 import { useTheme } from "@/context/theme-context";
-import { ThemeType } from "../postal-builder/postal-builder.types";
+import { ThemeType } from "../postal-front/postal-front.types";
 
 export type RaysOrigin =
   | "top-center"

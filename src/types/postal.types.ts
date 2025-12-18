@@ -1,4 +1,4 @@
-import { ThemeType } from "@/components/postal-builder/postal-builder.types";
+import { ThemeType } from "@/components/postal-front/postal-front.types";
 import { BackgroundThemeType } from "@/context/backgroundTheme.types";
 
 export interface Postal {

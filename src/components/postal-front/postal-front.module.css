@@ -1,0 +1,34 @@
+.postalFrontContainer {
+  position: absolute;
+  z-index: 1;
+}
+
+.postalFrontContainer.flipped {
+  z-index: 0;
+}
+
+.postal,
+.postalVertical {
+  backface-visibility: hidden;
+}
+.postal {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 9;
+  border: 5px solid var(--card);
+  border-radius: 5px;
+  position: relative;
+}
+.postalVertical {
+  aspect-ratio: 4 / 5;
+  max-width: 480px;
+  margin: auto;
+}
+.postalImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
