@@ -30,6 +30,11 @@
 .postalContainerVertical {
   aspect-ratio: 4 / 5;
   max-width: 32rem;
+
+  .message {
+    font-size: 1.2rem;
+    padding: 2rem;
+  }
 }
 
 .postalWrapperCustom {
