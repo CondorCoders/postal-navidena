@@ -30,10 +30,6 @@ const PostalFormSchema = z.object({
     .instanceof(File, { error: "La imagen es obligatoria" })
     .refine((file) => file !== undefined, "La imagen es obligatoria")
     .refine(
-      (file) => file && file.size <= 5 * 1024 * 1024,
-      "El tamaño de la imagen no puede exceder los 5MB"
-    )
-    .refine(
       (file) =>
         file && ["image/jpeg", "image/png", "image/gif"].includes(file.type),
       "Solo se permiten imágenes JPEG, PNG o GIF"
